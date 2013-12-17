@@ -1,0 +1,11 @@
+{
+    "name": "rvadym/blog",
+    "type": "library",
+    "keywords": ["blog","atk4"],
+    "homepage": "https://github.com/rvadym/blog",
+    "source": {
+        "url": "git@github.com:rvadym/blog.git",
+        "type": "git",
+        "reference": "origin/master"
+    }
+}
