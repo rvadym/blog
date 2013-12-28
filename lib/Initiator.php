@@ -8,18 +8,22 @@
  */
 namespace rvadym\blog;
 class Initiator extends \Controller_Addon {
-    public $namespace = 'rvadym\blog';
+    public $namespace  = 'rvadym\blog';
+    public $api_var    = 'rvadym_blog';
     public $addon_name = 'Agile Toolkit Blog Addon';
     public $db;
-    public $db_name = '';
-    public $db_path = '../db/';
-    public $db_extn = '.sqlite3';
-    public $db_user = '';
-    public $db_pass = '';
+    public $db_name        = '';
+    public $db_path        = '../db/';
+    public $db_full_path   = '';
+    public $file_full_path = '';
+    public $db_extn        = '.sqlite3';
+    public $db_user        = '';
+    public $db_pass        = '';
 
     function init() {
         parent::init();
-        exit('ddd');
+        $api_var = $this->api_var;
+        $this->api->$api_var = $this; // this initiator will be accesable as $this->api->rvadym_blog
         $this->getDB();
         if (is_a($this->api,'Api_Admin') ) {
             $this->api->menu->addMenuItem('rvadym/blog/admin','Blog');
@@ -29,27 +33,29 @@ class Initiator extends \Controller_Addon {
     private function getDB() {
         if (!$this->db) {
             $this->creteDBIfNotExist();
-            $this->configureDatabase();
             $this->connect();
         }
         return $this->db;
     }
     private function creteDBIfNotExist() {
         $this->configureDatabase();
-        if (!$this->databaseFileExist()) {
-            $this->createDatabase();
-        }
+        !$this->checkDatabaseFile();
     }
     private function configureDatabase() {
         if ($this->db_name == '') {
             $this->db_name = str_replace(array('/','\\'),'_',$this->namespace);
         }
+        if ($this->db_full_path == '') {
+            $this->db_full_path = 'sqlite:'.$this->db_path.$this->db_name.$this->db_extn;
+            $this->file_full_path = $this->db_path.$this->db_name.$this->db_extn;
+        }
     }
-    private function databaseFileExist() {
-        var_dump('sqlite:'.$this->db_path.$this->db_name);
-        exit();
-    }
-    private function createDatabase() {
+    private function checkDatabaseFile() {
+        if (!file_exists($this->file_full_path)) {
+            $sqlite3 = new \SQLite3($this->file_full_path); // creates file if not exists
+            $this->runMigrations($sqlite3);
+            $sqlite3->close();
+        }
     }
 
 
@@ -61,11 +67,21 @@ class Initiator extends \Controller_Addon {
      *    );
      */
     private function connect() {
-        $connect_config = array('sqlite:'.$this->db_path.$this->db_name);
+        $connect_config = array($this->db_full_path);
         if ($this->db_user) $connect_config[] = $this->db_user;
         if ($this->db_pass) $connect_config[] = $this->db_pass;
 
         $this->db = $this->add('DB');
-        $this->db->connect();
+        $this->db->connect($connect_config);
+    }
+    
+    private function runMigrations($pdo) {
+        $pdo->query(
+            'CREATE TABLE "rvadym_blog_article" (
+                "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                "title" TEXT NOT NULL,
+                "text" TEXT
+            );'
+        );
     }
 }
