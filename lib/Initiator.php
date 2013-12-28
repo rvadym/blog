@@ -11,6 +11,7 @@ class Initiator extends \Controller_Addon {
     public $namespace  = 'rvadym\blog';
     public $api_var    = 'rvadym_blog';
     public $addon_name = 'Agile Toolkit Blog Addon';
+
     public $db;
     public $db_name        = '';
     public $db_path        = '../db/';
@@ -74,7 +75,7 @@ class Initiator extends \Controller_Addon {
         $this->db = $this->add('DB');
         $this->db->connect($connect_config);
     }
-    
+
     private function runMigrations($pdo) {
         $pdo->query(
             'CREATE TABLE "rvadym_blog_article" (
