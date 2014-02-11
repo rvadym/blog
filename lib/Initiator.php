@@ -8,9 +8,19 @@
  */
 namespace rvadym\blog;
 class Initiator extends \Controller_Addon {
-    public $namespace  = 'rvadym\blog';
-    public $api_var    = 'rvadym_blog';
-    public $addon_name = 'Agile Toolkit Blog Addon';
+    public $namespace      = 'rvadym\blog';
+    public $api_var        = 'rvadym_blog';
+    public $addon_name     = 'Agile Toolkit Blog Addon';
+    public $addon_private_locations = array(
+        'docs'      => 'docs',
+        'php'       => 'lib',
+        'page'      => 'page',
+        'template'  => 'templates',
+    );
+    public $addon_public_locations  = array(
+        'js'     => 'js',
+        'css'    => 'css',
+    );
 
     public $db;
     public $db_name        = '';
