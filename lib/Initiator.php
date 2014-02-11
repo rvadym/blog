@@ -33,8 +33,6 @@ class Initiator extends \Controller_Addon {
 
     function init() {
         parent::init();
-        $api_var = $this->api_var;
-        $this->api->$api_var = $this; // this initiator will be accesable as $this->api->rvadym_blog
         $this->getDB();
         if (is_a($this->api,'Api_Admin') ) {
             $this->api->menu->addMenuItem('rvadym/blog/admin','Blog');
