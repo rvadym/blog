@@ -21,6 +21,7 @@ class Initiator extends \Controller_Addon {
         'js'     => 'js',
         'css'    => 'css',
     );
+    public $with_pages = true;
 
     public $db;
     public $db_name        = '';
@@ -38,6 +39,10 @@ class Initiator extends \Controller_Addon {
             $this->api->menu->addMenuItem('rvadym/blog/admin','Blog');
             $this->routePages('rvadym_blog');
         }
+    }
+    function addMenu($page) {
+        $this->m = $page->add('Menu');
+        $this->m->addMenuItem('rvadym/blog/admin','Admin');
     }
     private function getDB() {
         if (!$this->db) {
